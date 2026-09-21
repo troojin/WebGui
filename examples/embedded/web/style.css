@@ -1,0 +1,8 @@
+:root { color-scheme: dark; font-family: system-ui, sans-serif; }
+body { margin: 0; background: transparent; pointer-events: none; }
+.debug-menu { width: 260px; margin: 18px; padding: 14px; border: 1px solid #5d6473; border-radius: 7px; background: rgb(25 28 36 / 92%); box-shadow: 0 8px 24px rgb(0 0 0 / 35%); pointer-events: auto; }
+header { margin-bottom: 12px; font-weight: 700; }
+header span { float: right; color: #94a3b8; font-size: 11px; font-weight: 400; }
+label, button { display: block; margin: 9px 0; }
+button { width: 100%; padding: 7px; }
+#reply { min-height: 1.2em; color: #a5f3fc; font-size: 13px; }

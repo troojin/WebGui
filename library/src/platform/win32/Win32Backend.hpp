@@ -20,6 +20,7 @@ public:
     Win32Backend& operator=(const Win32Backend&) = delete;
 
     bool Init(const char* title, int width, int height, MessageCallback on_message);
+    bool Attach(HWND hwnd, bool transparent, MessageCallback on_message);
     bool Valid() const { return m_webview != nullptr && m_running; }
     bool Load(const std::string& file);
     void Show();
@@ -30,6 +31,10 @@ public:
 
 private:
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+    static LRESULT CALLBACK HostWndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam,
+        UINT_PTR subclass_id, DWORD_PTR reference_data);
+    bool InitWebView(bool transparent);
+    void Resize();
     bool WaitForCompletion(bool& done);
 
     HWND m_hwnd = nullptr;
@@ -40,4 +45,6 @@ private:
     MessageCallback m_on_message;
     bool m_com_initialized = false;
     bool m_running = false;
+    bool m_owns_window = false;
+    bool m_subclassed = false;
 };
