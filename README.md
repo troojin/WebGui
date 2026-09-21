@@ -2,6 +2,8 @@
 
 WebGUI is a small C++ library for native Windows applications with HTML, CSS, and JavaScript user interfaces. It owns the Win32 and WebView2 setup so an application only needs to create a window, load a page, and run it.
 
+It can also attach the same HTML UI to an HWND that your application already owns. This is useful for debug menus, inspectors, consoles, and developer overlays; WebGUI supplies WebView2 integration, while HTML, CSS, and JavaScript remain the UI layer.
+
 ## Add it to a project
 
 Download a WebGUI release and place the extracted `WebGUI/` folder in your project. A release is the contents of [`library/`](library) directly:
@@ -76,6 +78,20 @@ C++ receives the string supplied by `postMessage()` through `on_message()` and s
 window.execute_script("document.body.classList.add('ready')");
 ```
 
+## Embed in an existing Win32 window
+
+`Context` does not create or own the host HWND. Attach it after creating the host window, then keep dispatching the application's normal Win32 message loop. WebGUI subclasses the host only to track size changes, and removes that subclass when the context is destroyed or closed. Mouse and keyboard input are handled by the WebView2 child window in the normal Win32 input route.
+
+```cpp
+WebGUI::Context gui;
+if (!gui.attach(host_hwnd) || !gui.load("web/debug-menu.html")) {
+    return 1;
+}
+
+```
+
+`attach(hwnd)` enables a transparent WebView2 background by default so CSS can place panels over the host application. Use `attach(hwnd, false)` for an opaque embedded page. Make the document background transparent and give each panel its own opaque or translucent CSS background. The [`embedded` example](examples/embedded) demonstrates this with a small HTML debug menu and several independent controls.
+
 ## API
 
 | Method | Purpose |
@@ -90,6 +106,8 @@ window.execute_script("document.body.classList.add('ready')");
 | `on_message(handler)` | Sets the JavaScript-to-C++ message handler. |
 | `post_message(message)` | Sends a string to JavaScript. |
 | `execute_script(script)` | Runs JavaScript in the loaded page. |
+| `Context::attach(hwnd, transparent)` | Attaches WebView2 to an existing HWND; WebGUI does not destroy that HWND. |
+| `Context::poll_events()` / `Context::run()` | Optional message-loop helpers for an embedded host. Existing applications normally use their own loop. |
 
 ## Requirements
 

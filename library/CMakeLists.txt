@@ -43,12 +43,12 @@ target_include_directories(WebGUI
 )
 target_link_libraries(WebGUI PRIVATE
     "${WEBGUI_WEBVIEW2_ROOT}/x64/WebView2Loader.dll.lib"
+    comctl32
     ole32
     oleaut32
 )
 target_compile_definitions(WebGUI PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN NOMINMAX)
 
-# Copies the WebView2 loader next to an executable. Call after add_executable.
 function(webgui_copy_runtime target)
     add_custom_command(TARGET ${target} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
