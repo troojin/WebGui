@@ -1,0 +1,20 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  package:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: package library
+        shell: pwsh
+        run: Compress-Archive -Path library\* -DestinationPath WebGUI.zip
+      - name: upload release archive
+        uses: softprops/action-gh-release@v2
+        with:
+          files: WebGUI.zip
